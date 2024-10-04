@@ -12,12 +12,12 @@ class Booklistpagescreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.pushNamed(context, '/login');
+              Navigator.pushNamed(context, '/settings-page');
             },
           ),
         ],
       ),
-      body: Center(
+      body: const Center(
         child: Text('This is the Book List Page'),
       ),
     );
