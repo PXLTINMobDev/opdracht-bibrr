@@ -13,7 +13,7 @@ class Loginpagescreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.pushNamed(context, '/book-list');
+              Navigator.pushNamed(context, '/settings-page');
             },
           ),
         ],
