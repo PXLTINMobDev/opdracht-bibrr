@@ -64,24 +64,40 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
                           ),
                           margin: const EdgeInsets.symmetric(
                               vertical: 3, horizontal: 15),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 100,
-                                child: ListTile(
-                                  leading: books[index].image.isNotEmpty
-                                      ? Image.network(
-                                          books[index].image,
-                                          width: 80,
-                                          height: 100,
-                                          fit: BoxFit.contain,
-                                        )
-                                      : const Icon(Icons.book),
-                                  title: Text(books[index].title),
-                                  subtitle: Text(books[index].author),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0), // Add Padding for consistency
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                books[index].image.isNotEmpty
+                                    ? Image.network(
+                                        books[index].image,
+                                        width: 80,
+                                        height: 100,
+                                        fit: BoxFit.cover, // Make image fill its space
+                                      )
+                                    : const Icon(Icons.book, size: 80),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        books[index].title,
+                                        style: const TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        books[index].author,
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              )
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       },

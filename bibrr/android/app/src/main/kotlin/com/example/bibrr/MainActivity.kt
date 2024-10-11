@@ -1,4 +1,4 @@
-package com.example.bibrr
+package com.android.bibrr
 
 import io.flutter.embedding.android.FlutterActivity
 
