@@ -6,14 +6,16 @@ import 'dart:convert';
 
 class HttpHelper {
   //final String authority = 'library-api.postmanlabs.com';
-  final String authority = 'gutendex.com';
-
-  Future<List<Book>> getBooks() async {
-    var url = Uri.https(authority, '/books');
+  //final String authority = 'gutendex.com';
+  final String authority = 'api.algobook.info';
+  Future<List<Book>> getBooks(String title) async {
+    //var url = Uri.https(authority, '/books');
+    var url = Uri.https(authority, '/v1/ebooks/title/$title');
     http.Response result = await http.get(url);
-    Map<String, dynamic> data = json.decode(result.body);
-    List<dynamic> bookList = data['results'];
-    List<Book> books = bookList.map((book) => Book.fromJson(book)).toList();
+    List<dynamic> data = json.decode(result.body);
+    //Map<String, dynamic> data = json.decode(result.body);
+    //List<dynamic> bookList = data['results'];
+    List<Book> books = data.map((book) => Book.fromJson(book)).toList();
     return books;
   }
 }

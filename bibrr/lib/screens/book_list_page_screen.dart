@@ -44,18 +44,46 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
                       itemCount: books.length,
                       itemBuilder: (context, index) {
                         return Container(
-                            decoration: BoxDecoration(
-                              border:
-                                    Border.all(color: Colors.black, width: 1)),
-                            margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 16),
-                            child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: ListTile(
-                                title: Text(books[index].title),
-                                subtitle: Text(books[index].author),
-                              ),
-                            ));
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              top: BorderSide(
+                                  color:
+                                      const Color.fromARGB(255, 206, 205, 205),
+                                  width: 1),
+                              bottom: BorderSide(
+                                  color:
+                                      const Color.fromARGB(255, 206, 205, 205),
+                                  width: 1),
+                              left: BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1), // Transparent left border
+                              right: BorderSide(
+                                  color: Colors.transparent, width: 1),
+                            ),
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 3, horizontal: 15),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 100,
+                                child: ListTile(
+                                  leading: books[index].image.isNotEmpty
+                                      ? Image.network(
+                                          books[index].image,
+                                          width: 80,
+                                          height: 100,
+                                          fit: BoxFit.contain,
+                                        )
+                                      : const Icon(Icons.book),
+                                  title: Text(books[index].title),
+                                  subtitle: Text(books[index].author),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
                       },
                     ),
             ),
@@ -67,11 +95,14 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
 
   Future<void> getData() async {
     setState(() {
-      //isLoading = true;
+      isLoading = true;
     });
 
     HttpHelper helper = HttpHelper();
-    List<Book> result = await helper.getBooks();
+    //List<Book> result = await helper.getBooks();
+    List<Book> result = await helper.getBooks(':title');
+    //List<Book> result = await helper.getBooks('/lord of the rings');
+
     setState(() {
       books = result;
       isLoading = false;
