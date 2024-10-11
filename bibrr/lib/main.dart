@@ -18,7 +18,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blueGrey),
+      theme: ThemeData(
+        primaryColor: Color(0xFFAEDFF7),
+        scaffoldBackgroundColor: Color.fromARGB(235, 255, 255, 255), 
+        appBarTheme: AppBarTheme(
+          color: Color(0xFFAEDFF7), 
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Color(0xFFAEDFF7),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFFAEDFF7), 
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.blueGrey, 
+        ),
+
+      ),
       routes: {
         '/book-list': (context) => const Booklistpagescreen(),
         '/login': (context) => const Loginpagescreen(),
