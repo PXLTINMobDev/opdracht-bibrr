@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "158917789831",
+    "project_id": "bibrr-project-backend-px-7c560",
+    "storage_bucket": "bibrr-project-backend-px-7c560.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158917789831:android:95a8f9ee522125e5275022",
+        "android_client_info": {
+          "package_name": "com.android.bibrr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFhP_EVCPUe6rtLRnUu6OmDJuQp2XkvkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

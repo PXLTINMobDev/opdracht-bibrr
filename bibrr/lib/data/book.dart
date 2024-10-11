@@ -6,7 +6,7 @@ class Book {
 
   Book.fromJson(Map<String, dynamic> bookMap) {
     this.title = bookMap['title'] ?? '';
-    this.author = bookMap['authors'][0]['name'] ?? '';
+    //this.author = bookMap['authors'][0]['name'] ?? '';
 
     
   }

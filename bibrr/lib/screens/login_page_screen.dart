@@ -8,7 +8,8 @@ class Loginpagescreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Login')
+        /*,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -16,7 +17,7 @@ class Loginpagescreen extends StatelessWidget {
               Navigator.pushNamed(context, '/settings-page');
             },
           ),
-        ],
+        ],*/
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -41,7 +42,7 @@ class Loginpagescreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // login action
-                              Navigator.pushNamed(context, '/book-list');
+                Navigator.pushNamed(context, '/book-list');
               },
               child: const Text('Login'),
             ),
@@ -70,7 +71,7 @@ class Loginpagescreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/google_logo.png', // Ensure you have the Google logo asset
+                      'assets/google_logo.png', 
                       height: 24,
                       width: 24,
                     ),
