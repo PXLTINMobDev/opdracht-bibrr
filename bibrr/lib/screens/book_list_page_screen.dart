@@ -12,7 +12,8 @@ class Booklistpagescreen extends StatefulWidget {
 class _BooklistpagescreenState extends State<Booklistpagescreen> {
   List<Book> books = [];
   bool isLoading = false;
-
+  final TextEditingController _searchController = TextEditingController();
+  
   @override
   void initState() {
     super.initState();
@@ -37,6 +38,31 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
         padding: const EdgeInsets.all(0),
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search for a book title',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      // Initiates a search based on the query entered
+                      getData(query: _searchController.text);
+                    },
+                  ),
+                ],
+              ),
+            ),
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -109,14 +135,14 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
     );
   }
 
-  Future<void> getData() async {
+  Future<void> getData({String query = ''}) async {
     setState(() {
       isLoading = true;
     });
 
     HttpHelper helper = HttpHelper();
     //List<Book> result = await helper.getBooks();
-    List<Book> result = await helper.getBooks(':title');
+    List<Book> result = await helper.getBooks(query);
     //List<Book> result = await helper.getBooks('/lord of the rings');
 
     setState(() {

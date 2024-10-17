@@ -22,10 +22,10 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
   }
 
   Future<void> _loadUsernameAndImage() async {
-    final prefs = await SharedPreferences.getInstance();
+    final preferences = await SharedPreferences.getInstance();
     setState(() {
-      _username = prefs.getString('username') ?? "Username";
-      String? imagePath = prefs.getString('profile_image');
+      _username = preferences.getString('username') ?? "Username";
+      String? imagePath = preferences.getString('profile_image');
       if (imagePath != null) {
         _imageFile = File(imagePath);
       }
@@ -39,19 +39,49 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
 
   Future<void> _saveImagePath(String imagePath) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('profile_image', imagePath); // **Save the image file path**
+    prefs.setString('profile_image', imagePath);
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: source);
 
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
-      _saveImagePath(pickedFile.path); // **Cache the new image path**
+      _saveImagePath(pickedFile.path);
     }
+  }
+
+void _showPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Camera'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _editUsername() {
@@ -77,7 +107,7 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
               child: const Text("Save"),
               onPressed: () {
                 setState(() {
-                  _username = _usernameController.text; // **Update the username**
+                  _username = _usernameController.text;
                 });
                 _saveUsername(_username);
                 Navigator.of(context).pop();
@@ -94,7 +124,7 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: Container(
-        color: Colors.red,
+        color: const Color.fromARGB(255, 64, 204, 255),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -121,7 +151,7 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
                   right: 0,
                   child: IconButton(
                     icon: const Icon(Icons.edit, color: Colors.white),
-                    onPressed: _pickImage,
+                    onPressed: ()=>  _showPicker(context),
                   ),
                 ),
               ],
