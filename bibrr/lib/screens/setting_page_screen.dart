@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -119,10 +120,15 @@ void _showPicker(BuildContext context) {
     );
   }
 
+  void signUserOut() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacementNamed('/');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: const Text('Settings'), actions: [IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))],),
       body: Container(
         color: const Color.fromARGB(255, 64, 204, 255),
         padding: const EdgeInsets.all(16.0),

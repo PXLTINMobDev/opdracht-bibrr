@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'bibrr-project-backend-px-7c560.appspot.com',
     iosBundleId: 'com.example.bibrr',
   );
+
 }
