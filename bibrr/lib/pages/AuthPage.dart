@@ -19,7 +19,7 @@ class AuthPage extends StatelessWidget {
               return Loginpagescreen();
             }
           },
-          )
+        )
     );
   }
 }

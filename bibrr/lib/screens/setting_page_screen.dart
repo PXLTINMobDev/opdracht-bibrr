@@ -130,7 +130,7 @@ void _showPicker(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings'), actions: [IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))],),
       body: Container(
-        color: const Color.fromARGB(255, 64, 204, 255),
+        color: Colors.lightBlueAccent,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
