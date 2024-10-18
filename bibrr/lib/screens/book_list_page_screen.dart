@@ -1,5 +1,6 @@
 import 'package:bibrr/data/book.dart';
 import 'package:bibrr/data/http_helper.dart';
+import 'package:bibrr/screens/book_detail_page_screen.dart';
 import 'package:flutter/material.dart';
 
 class Booklistpagescreen extends StatefulWidget {
@@ -69,7 +70,15 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
                   : ListView.builder(
                       itemCount: books.length,
                       itemBuilder: (context, index) {
-                        return Container(
+                        return InkWell(
+                          onTap: (){
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(builder: (context) => Bookdetailpagescreen(book: books[index])),
+                              );
+                          },
+                        
+                        child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border(
@@ -125,6 +134,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
                               ],
                             ),
                           ),
+                        ),
                         );
                       },
                     ),
