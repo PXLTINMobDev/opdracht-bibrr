@@ -26,8 +26,50 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
 
   @override
   Widget build(BuildContext context) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth > 600) {
+            // horizontaal
+            return Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: buildScaffold(body: buildBookList()),
+                ),
+                selectedBook != null
+                    ? Expanded(
+                        flex: 1,
+                        child: Stack(
+                          children: [
+                            Bookdetailpagescreen(book: selectedBook!),
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              child: IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  setState(() {
+                                    selectedBook = null; 
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
+              ],
+            );
+          } else {
+            // verticaal
+            return  buildScaffold(body: buildBookList());
+          }
+        },
+    );
+  }
+  Widget buildScaffold({required Widget body}) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, 
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('BibRR'),
         actions: [
@@ -39,121 +81,121 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
           ),
         ],
       ),
-   
+      body: body, 
+    );
+  }
 
-
-        body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search for a book title',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        // Initiates a search based on the query entered
-                        getData(query: _searchController.text);
+  Widget buildBookList() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            buildSearchBar(),
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      itemCount: books.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            if (MediaQuery.of(context).size.width > 600) {
+                              setState(() {
+                                selectedBook = books[index];
+                              });
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Bookdetailpagescreen(
+                                    book: books[index],
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: buildBookItem(books[index]),
+                        );
                       },
                     ),
-                  ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search for a book title',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : ListView.builder(
-                        itemCount: books.length,
-                        itemBuilder: (context, index) {
-                          
-                          return InkWell(
-                            onTap: (){
-                              Navigator.push(
-                                context, 
-                                MaterialPageRoute(builder: (context) => Bookdetailpagescreen(book: books[index])),
-                                );
-                            },
-                          
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border(
-                                top: BorderSide(
-                                    color:
-                                        const Color.fromARGB(255, 206, 205, 205),
-                                    width: 1),
-                                bottom: BorderSide(
-                                    color:
-                                        const Color.fromARGB(255, 206, 205, 205),
-                                    width: 1),
-                                left: BorderSide(
-                                    color: Colors.transparent,
-                                    width: 1), // Transparent left border
-                                right: BorderSide(
-                                    color: Colors.transparent, width: 1),
-                              ),
-                            ),
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 15),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0), // Add Padding for consistency
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  books[index].image.isNotEmpty
-                                      ? Image.network(
-                                          books[index].image,
-                                          width: 80,
-                                          height: 100,
-                                          fit: BoxFit.cover, // Make image fill its space
-                                        )
-                                      : const Icon(Icons.book, size: 80),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          books[index].title,
-                                          style: const TextStyle(
-                                              fontSize: 16, fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          books[index].author,
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          );
-                        },
-                      ),
-              ),
-            ],
+            ),
           ),
-        ),
-        ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              getData(query: _searchController.text);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget buildBookItem(Book book) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+          color: const Color.fromARGB(255, 206, 205, 205),
+        ),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            book.image.isNotEmpty
+                ? Image.network(
+                    book.image,
+                    width: 80,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  )
+                : const Icon(Icons.book, size: 80),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    book.title,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    book.author,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
