@@ -9,10 +9,14 @@ class Bookdetailpagescreen extends StatelessWidget {
 
   final Map<String, String> _strings = {};
 
-  Future<void> _loadStrings() async {
-    final String response = await rootBundle.loadString('assets/strings.json');
-    final data = await json.decode(response);
-    _strings.addAll(data.map((key, value) => MapEntry(key, value.toString())));
+Future<void> _loadStrings() async {
+    try {
+      final String response = await rootBundle.loadString('assets/strings.json');
+      final data = json.decode(response) as Map<String, dynamic>;
+      _strings.addAll(data.map((key, value) => MapEntry(key, value.toString())));
+    } catch (e) {
+      print('Error loading strings: $e'); // Print error for debugging
+    }
   }
 
   @override

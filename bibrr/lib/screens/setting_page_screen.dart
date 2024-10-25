@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'dart:convert'; // Import for JSON handling
+import 'package:flutter/services.dart'; // Import for rootBundle
 
 class Settingpagescreen extends StatefulWidget {
   const Settingpagescreen({super.key});
@@ -13,19 +15,37 @@ class Settingpagescreen extends StatefulWidget {
 
 class _SettingpagescreenState extends State<Settingpagescreen> {
   File? _imageFile;
-  String _username = "Username"; 
+  String _username = "Username"; // This will hold the updated username
   final TextEditingController _usernameController = TextEditingController(); 
-  
-   @override
+
+  // Map to hold strings loaded from JSON
+  final Map<String, String> _strings = {};
+
+  @override
   void initState() {
     super.initState();
     _loadUsernameAndImage(); 
+    _loadStrings(); // Load strings from JSON
+  }
+
+  // Load strings from the JSON file
+  Future<void> _loadStrings() async {
+    try {
+      final String response = await rootBundle.loadString('assets/strings.json');
+      final data = json.decode(response) as Map<String, dynamic>;
+      _strings.addAll(data.map((key, value) => MapEntry(key, value.toString())));
+      
+      // Set the username to the default string from the JSON if it's not set
+      _username = _strings['default_username'] ?? _username; // Use the JSON default if available
+    } catch (e) {
+      print('Error loading strings: $e'); // Print error for debugging
+    }
   }
 
   Future<void> _loadUsernameAndImage() async {
     final preferences = await SharedPreferences.getInstance();
     setState(() {
-      _username = preferences.getString('username') ?? "Username";
+      _username = preferences.getString('username') ?? _username; // Load saved username or use the initialized value
       String? imagePath = preferences.getString('profile_image');
       if (imagePath != null) {
         _imageFile = File(imagePath);
@@ -55,7 +75,7 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
     }
   }
 
-void _showPicker(BuildContext context) {
+  void _showPicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
@@ -108,9 +128,9 @@ void _showPicker(BuildContext context) {
               child: const Text("Save"),
               onPressed: () {
                 setState(() {
-                  _username = _usernameController.text;
+                  _username = _usernameController.text; // Update the username
                 });
-                _saveUsername(_username);
+                _saveUsername(_username); // Save the updated username
                 Navigator.of(context).pop();
               },
             ),
@@ -128,7 +148,10 @@ void _showPicker(BuildContext context) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings'), actions: [IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))],),
+      appBar: AppBar(
+        title: const Text('Settings'),
+        actions: [IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))],
+      ),
       body: Container(
         color: Colors.lightBlueAccent,
         padding: const EdgeInsets.all(16.0),
@@ -157,7 +180,7 @@ void _showPicker(BuildContext context) {
                   right: 0,
                   child: IconButton(
                     icon: const Icon(Icons.edit, color: Colors.white),
-                    onPressed: ()=>  _showPicker(context),
+                    onPressed: () => _showPicker(context),
                   ),
                 ),
               ],
