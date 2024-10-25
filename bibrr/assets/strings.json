@@ -1,0 +1,20 @@
+{
+    "login_title": "Login",
+    "email_label": "Email",
+    "password_label": "Password",
+    "login_button": "Login",
+    "google_sign_in": "Sign in with Google",
+    "app_title": "BibRR",
+    "settings": "Settings",
+    "search_hint": "Search for a book title",
+    "author_label": "Author: ",
+    "description_label": "Description:",
+    "pages_label": "Pages: ",
+    "settings_title": "Settings",
+    "gallery": "Gallery",
+    "camera": "Camera",
+    "edit_username": "Edit Username",
+    "enter_new_username": "Enter new username",
+    "cancel": "Cancel",
+    "save": "Save"
+}

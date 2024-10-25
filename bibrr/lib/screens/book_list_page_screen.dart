@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:bibrr/data/book.dart';
 import 'package:bibrr/data/http_helper.dart';
 import 'package:bibrr/screens/book_detail_page_screen.dart';
@@ -15,63 +17,73 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
   List<Book> books = [];
   bool isLoading = false;
   final TextEditingController _searchController = TextEditingController();
-  Book? selectedBook; 
-
+  Book? selectedBook;
+  final Map<String, String> _strings = {};
 
   @override
   void initState() {
     super.initState();
+    _loadStrings();
     getData();
+  }
+
+  Future<void> _loadStrings() async {
+    final String response = await rootBundle.loadString('assets/strings.json');
+    final data = await json.decode(response);
+    setState(() {
+      _strings.addAll(data.map((key, value) => MapEntry(key, value.toString())));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth > 600) {
-            // horizontaal
-            return Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: buildScaffold(body: buildBookList()),
-                ),
-                selectedBook != null
-                    ? Expanded(
-                        flex: 1,
-                        child: Stack(
-                          children: [
-                            Bookdetailpagescreen(book: selectedBook!),
-                            Positioned(
-                              top: 10,
-                              right: 10,
-                              child: IconButton(
-                                icon: const Icon(Icons.close),
-                                onPressed: () {
-                                  setState(() {
-                                    selectedBook = null; 
-                                  });
-                                },
-                              ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 600) {
+          // horizontaal
+          return Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: buildScaffold(body: buildBookList()),
+              ),
+              selectedBook != null
+                  ? Expanded(
+                      flex: 1,
+                      child: Stack(
+                        children: [
+                          Bookdetailpagescreen(book: selectedBook!),
+                          Positioned(
+                            top: 10,
+                            right: 10,
+                            child: IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () {
+                                setState(() {
+                                  selectedBook = null;
+                                });
+                              },
                             ),
-                          ],
-                        ),
-                      )
-                    : Container(),
-              ],
-            );
-          } else {
-            // verticaal
-            return  buildScaffold(body: buildBookList());
-          }
-        },
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(),
+            ],
+          );
+        } else {
+          // verticaal
+          return buildScaffold(body: buildBookList());
+        }
+      },
     );
   }
+
   Widget buildScaffold({required Widget body}) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('BibRR'),
+        title: Text(_strings['app_title'] ?? 'BibRR'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -81,7 +93,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
           ),
         ],
       ),
-      body: body, 
+      body: body,
     );
   }
 
@@ -136,7 +148,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search for a book title',
+                hintText: _strings['search_hint'] ?? 'Search for a book title',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -203,21 +215,16 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
     setState(() {
       isLoading = true;
     });
-    if (query.isEmpty){
+    if (query.isEmpty) {
       query = ':title';
     }
 
     HttpHelper helper = HttpHelper();
-    //List<Book> result = await helper.getBooks();
     List<Book> result = await helper.getBooks(query);
-    //List<Book> result = await helper.getBooks('/lord of the rings');
 
     setState(() {
       books = result;
       isLoading = false;
     });
   }
-
-  
-
 }
