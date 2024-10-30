@@ -1,3 +1,5 @@
+import 'package:translator/translator.dart';
+
 class Book {
   String title = '';
   String author = '';
@@ -7,7 +9,12 @@ class Book {
   String isbn = '';
   String publisher = '';
   String publishedDate = '';
-
+  
+  Future<String> getTranslatedDescription(String languageCode) async {
+    final translator = GoogleTranslator();
+    final translation = await translator.translate(localizedDescription, to: languageCode);
+    return translation.text;
+  }
 
   Book(this.title, this.author, this.image, this.localizedDescription, this.pages, this.isbn, this.publisher, this.publishedDate);
 

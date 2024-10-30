@@ -1,10 +1,12 @@
+import 'package:bibrr/services/LanguageService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
-import 'dart:convert'; // Import for JSON handling
-import 'package:flutter/services.dart'; // Import for rootBundle
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 
 class Settingpagescreen extends StatefulWidget {
@@ -16,43 +18,52 @@ class Settingpagescreen extends StatefulWidget {
 
 class _SettingpagescreenState extends State<Settingpagescreen> {
   File? _imageFile;
-  String _username = "Username"; // This will hold the updated username
+  String _username = "Username";
   final TextEditingController _usernameController = TextEditingController();
-
-  // Map to hold strings loaded from JSON
   final Map<String, String> _strings = {};
-  Color _imageBorderColor = Colors.white; // Initial border color for the image
+  Color _imageBorderColor = Colors.white;
   Color _usernameBorderColor = Colors.transparent;
+  String _languageFile = 'assets/strings.json';
 
   @override
   void initState() {
     super.initState();
+    _loadLanguagePreference();
     _loadUsernameAndImage();
-    _loadStrings(); // Load strings from JSON
   }
 
-  // Load strings from the JSON file
+  Future<void> _loadLanguagePreference() async {
+    final preferences = await SharedPreferences.getInstance();
+    String? storedFile = preferences.getString('language_file');
+    if (storedFile != 'assets/strings.json' && storedFile != 'assets/string_dutch.json') {
+      storedFile = 'assets/strings.json'; // Default to English
+      preferences.setString('language_file', storedFile);
+    }
+    _languageFile = storedFile ?? 'assets/strings.json';
+    _loadStrings();
+    print("Loaded language file: $_languageFile");
+  }
+
   Future<void> _loadStrings() async {
     try {
-      final String response =
-          await rootBundle.loadString('assets/strings.json');
+      final String response = await rootBundle.loadString(_languageFile);
       final data = json.decode(response) as Map<String, dynamic>;
-      _strings
-          .addAll(data.map((key, value) => MapEntry(key, value.toString())));
-
-      // Set the username to the default string from the JSON if it's not set
-      _username = _strings['default_username'] ??
-          _username; // Use the JSON default if available
+      _strings.addAll(data.map((key, value) => MapEntry(key, value.toString())));
+      setState(() {});
     } catch (e) {
-      print('Error loading strings: $e'); // Print error for debugging
+      print('Error loading strings: $e');
     }
+  }
+
+  Future<void> _saveLanguagePreference(String languageFile) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('language_file', languageFile);
   }
 
   Future<void> _loadUsernameAndImage() async {
     final preferences = await SharedPreferences.getInstance();
     setState(() {
-      _username = preferences.getString('username') ??
-          _username; // Load saved username or use the initialized value
+      _username = preferences.getString('username') ?? _username;
       String? imagePath = preferences.getString('profile_image');
       if (imagePath != null) {
         _imageFile = File(imagePath);
@@ -92,7 +103,7 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
+                title: Text(_strings['gallery'] ?? 'Gallery'),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -100,7 +111,7 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Camera'),
+                title: Text(_strings['camera'] ?? 'Camera'),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.of(context).pop();
@@ -120,26 +131,26 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Edit Username"),
+          title: Text(_strings['edit_username'] ?? 'Edit Username'),
           content: TextField(
             controller: _usernameController,
-            decoration: const InputDecoration(hintText: "Enter new username"),
+            decoration: InputDecoration(hintText: _strings['enter_new_username'] ?? 'Enter new username'),
           ),
           actions: [
             TextButton(
-              child: const Text("Cancel"),
+              child: Text(_strings['cancel'] ?? 'Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text("Save"),
+              child: Text(_strings['save'] ?? 'Save'),
               onPressed: () {
                 setState(() {
                   _username = _usernameController.text;
-                  _triggerUsernameBorderAnimation(); // Update the username
+                  _triggerUsernameBorderAnimation();
                 });
-                _saveUsername(_username); // Save the updated username
+                _saveUsername(_username);
                 Navigator.of(context).pop();
               },
             ),
@@ -151,27 +162,36 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
 
   void _triggerImageBorderAnimation() {
     setState(() {
-      _imageBorderColor = Colors.blueAccent; // Highlight color for image border
+      _imageBorderColor = Colors.blueAccent;
     });
 
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
-        _imageBorderColor = Colors.white; // Revert to the original color
+        _imageBorderColor = Colors.white;
       });
     });
   }
 
   void _triggerUsernameBorderAnimation() {
     setState(() {
-      _usernameBorderColor =
-          Colors.blueAccent; // Highlight color for username border
+      _usernameBorderColor = Colors.blueAccent;
     });
 
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
-        _usernameBorderColor = Colors.transparent; // Revert to no border
+        _usernameBorderColor = Colors.transparent;
       });
     });
+  }
+
+  void _changeLanguage(String languageFile) async {
+    final languageService = Provider.of<LanguageService>(context, listen: false);
+    await languageService.setLanguage(languageFile);
+    setState(() {
+      _languageFile = languageFile;
+      _loadStrings();
+    });
+    _saveLanguagePreference(languageFile);
   }
 
   void signUserOut() async {
@@ -181,12 +201,14 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
 
   @override
   Widget build(BuildContext context) {
+    final languageService = Provider.of<LanguageService>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
-        actions: [IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))],
+        title: Text(languageService.getString('settings_title', 'Settings')),
+        actions: [IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))],
       ),
-       body: Stack(
+      body: Stack(
         children: [
           Container(
             padding: const EdgeInsets.all(16.0),
@@ -254,6 +276,29 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
               height: 100,
               repeat: true,
               animate: true,
+            ),
+          ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: DropdownButton<String>(
+              value: _languageFile,
+              icon: const Icon(Icons.language),
+              items: const [
+                DropdownMenuItem(
+                  value: 'assets/strings.json',
+                  child: Text('English'),
+                ),
+                DropdownMenuItem(
+                  value: 'assets/string_dutch.json',
+                  child: Text('Nederlands'),
+                ),
+              ],
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  _changeLanguage(newValue);
+                }
+              },
             ),
           ),
         ],

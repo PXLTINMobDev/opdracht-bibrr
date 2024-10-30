@@ -1,0 +1,21 @@
+{
+    "default_username": "Standaard gebruikersnaam",
+    "login_title": "Aanmelden",
+    "email_label": "Email",
+    "password_label": "Wachtwoord",
+    "login_button": "Aanmelden",
+    "google_sign_in": "Aanmelden met Google",
+    "app_title": "BibRR",
+    "settings": "Instellingen",
+    "search_hint": "Zoek naar een boek titel",
+    "author_label": "Autheur: ",
+    "description_label": "Beschrijving:",
+    "pages_label": "Paginas: ",
+    "settings_title": "Instellingen",
+    "gallery": "Gallerij",
+    "camera": "Camera",
+    "edit_username": "Verander gebruikersnaam",
+    "enter_new_username": "Geef nieuwe gebruikersnaam in",
+    "cancel": "Annuleren",
+    "save": "Opslaan"
+}

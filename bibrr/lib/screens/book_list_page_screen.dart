@@ -1,13 +1,13 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:bibrr/services/LanguageService.dart';
 import 'package:bibrr/data/book.dart';
 import 'package:bibrr/data/http_helper.dart';
 import 'package:bibrr/screens/book_detail_page_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 class Booklistpagescreen extends StatefulWidget {
-  const Booklistpagescreen({super.key});
+    const Booklistpagescreen({super.key});
 
   @override
   State<Booklistpagescreen> createState() => _BooklistpagescreenState();
@@ -18,23 +18,11 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
   bool isLoading = false;
   final TextEditingController _searchController = TextEditingController();
   Book? selectedBook;
-  final Map<String, String> _strings = {};
 
   @override
   void initState() {
     super.initState();
-    _loadStrings();
     getData();
-  }
-
-  Future<void> _loadStrings() async {
-    try {
-      final String response = await rootBundle.loadString('assets/strings.json');
-      final data = json.decode(response) as Map<String, dynamic>;
-      _strings.addAll(data.map((key, value) => MapEntry(key, value.toString())));
-    } catch (e) {
-      print('Error loading strings: $e'); // Print error for debugging
-    }
   }
 
   @override
@@ -42,7 +30,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 600) {
-          // horizontaal
+          // Horizontal layout
           return Row(
             children: [
               Expanded(
@@ -54,7 +42,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
                       flex: 1,
                       child: Stack(
                         children: [
-                          Bookdetailpagescreen(book: selectedBook!),
+                          BookDetailPageScreen(book: selectedBook!),
                           Positioned(
                             top: 10,
                             right: 10,
@@ -74,7 +62,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
             ],
           );
         } else {
-          // verticaal
+          // Vertical layout
           return buildScaffold(body: buildBookList());
         }
       },
@@ -82,10 +70,11 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
   }
 
   Widget buildScaffold({required Widget body}) {
+    final languageService = Provider.of<LanguageService>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text(_strings['app_title'] ?? 'BibRR'),
+        title: Text(languageService.getString('app_title')),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -123,7 +112,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Bookdetailpagescreen(
+                                  builder: (context) => BookDetailPageScreen(
                                     book: books[index],
                                   ),
                                 ),
@@ -142,6 +131,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
   }
 
   Widget buildSearchBar() {
+    final languageService = Provider.of<LanguageService>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -150,7 +140,7 @@ class _BooklistpagescreenState extends State<Booklistpagescreen> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: _strings['search_hint'] ?? 'Search for a book title',
+                hintText: languageService.getString('search_hint'),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
