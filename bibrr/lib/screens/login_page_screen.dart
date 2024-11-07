@@ -11,7 +11,7 @@ class LoginPageScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-void signUserIn() async {
+  void signUserIn() async {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: _emailController.text,
       password: _passwordController.text,
@@ -62,6 +62,20 @@ void signUserIn() async {
                 signUserIn();
               },
               child: Text(languageService.getString('login_button', 'Login')),
+            ),
+            const SizedBox(height: 16.0),
+            Row(
+              children: [
+                const Expanded(child: Divider()),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    languageService.getString('or', 'OR'),
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ),
+                const Expanded(child: Divider()),
+              ],
             ),
             const SizedBox(height: 16.0),
             GestureDetector(

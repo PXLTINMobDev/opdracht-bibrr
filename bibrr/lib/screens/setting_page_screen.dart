@@ -36,7 +36,7 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
     final preferences = await SharedPreferences.getInstance();
     String? storedFile = preferences.getString('language_file');
     if (storedFile != 'assets/strings.json' && storedFile != 'assets/string_dutch.json') {
-      storedFile = 'assets/strings.json'; // Default to English
+      storedFile = 'assets/strings.json';
       preferences.setString('language_file', storedFile);
     }
     _languageFile = storedFile ?? 'assets/strings.json';
@@ -61,24 +61,33 @@ class _SettingpagescreenState extends State<Settingpagescreen> {
   }
 
   Future<void> _loadUsernameAndImage() async {
-    final preferences = await SharedPreferences.getInstance();
-    setState(() {
-      _username = preferences.getString('username') ?? _username;
-      String? imagePath = preferences.getString('profile_image');
-      if (imagePath != null) {
-        _imageFile = File(imagePath);
-      }
-    });
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final preferences = await SharedPreferences.getInstance();
+      setState(() {
+        _username = preferences.getString('${user.uid}_username') ?? _username;
+        String? imagePath = preferences.getString('${user.uid}_profile_image');
+        if (imagePath != null) {
+          _imageFile = File(imagePath);
+        }
+      });
+    }
   }
 
   Future<void> _saveUsername(String username) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', username);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('${user.uid}_username', username);
+    }
   }
 
   Future<void> _saveImagePath(String imagePath) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('profile_image', imagePath);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('${user.uid}_profile_image', imagePath);
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
