@@ -52,14 +52,14 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Removes the back arrow
+        automaticallyImplyLeading: false, 
         title: Text(languageService.getString('login_title', 'Login')),
       ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Centers vertically
+            mainAxisAlignment: MainAxisAlignment.center, 
             children: [
               if (_errorMessage.isNotEmpty)
                 Text(
