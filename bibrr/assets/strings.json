@@ -17,5 +17,6 @@
     "edit_username": "Edit Username",
     "enter_new_username": "Enter new username",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "login_error": "Login failed. Please try again."
 }

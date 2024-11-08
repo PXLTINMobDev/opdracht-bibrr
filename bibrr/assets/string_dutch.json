@@ -17,5 +17,6 @@
     "edit_username": "Verander gebruikersnaam",
     "enter_new_username": "Geef nieuwe gebruikersnaam in",
     "cancel": "Annuleren",
-    "save": "Opslaan"
+    "save": "Opslaan",
+    "login_error": "Aanmelden mislukt. Probeer opnieuw."
 }
