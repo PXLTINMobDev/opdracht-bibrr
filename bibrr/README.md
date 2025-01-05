@@ -113,3 +113,5 @@ De webservice Firebase wordt ook gebruikt. Hierin wordt een project aangemaakt e
 ## Extra informatie
 
 Het is mogelijk dat een melding verschijnt met het verzoek om de ontwikkelaarsmodus in te schakelen op Windows. Zonder deze instelling kan de applicatie bij ons niet worden gestart.
+
+Als gebruiker kan u inloggen met Rune@gmail.com met wachtwoord 123Rune123
